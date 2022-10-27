@@ -1,3 +1,94 @@
+OPTION _EXPLICIT
+PRINT "Creating a parabolic function from entered 3 coordinate points and drawing a vault of specified lenght in AutoCAD"
+SLEEP 1
+
+
+
+DIM x1, x2, x3, y1, y2, y3 AS SINGLE
+
+
+INPUT "First Point (x1,y1): ", x1, y1
+INPUT "Second Point (x2,y2): ", x2, y2
+INPUT "Third Point (x3, y3): ", x3, y3
+
+DIM a, b, c AS SINGLE
+
+DIM det AS SINGLE 'det=determinant   parabole function y= ax^2+bx+c 3x3 matrix is used to find the unknowns a b c.
+det = (x1) ^ 2 * (x2 - x3) - x1 * ((x2) ^ 2 - (x3) ^ 2) + ((x2) ^ 2 * x3 - x2 * (x3) ^ 2)
+
+IF det = 0 THEN
+    PRINT "Determinant Zero!"
+    END
+END IF
+
+a = (1 / det) * (y1 * (x2 - x3) + y2 * (-1 * (x1 - x3)) + y3 * (x1 - x2))
+b = (1 / det) * ((y1 * (-1 * ((x2) ^ 2 - (x3) ^ 2))) + (y2 * ((x1) ^ 2 - (x3) ^ 2)) + (y3 * (-1 * ((x1) ^ 2 - (x2) ^ 2))))
+c = (1 / det) * ((y1 * (((x2) ^ 2 * x3) - ((x3) ^ 2 * x2))) + (y2 * (-1 * (((x1) ^ 2 * x3) - ((x3) ^ 2 * x1)))) + (y3 * (((x1) ^ 2 * x2) - ((x2) ^ 2 * x1))))
+
+IF a = 0 THEN
+
+    PRINT "Linear Points Detected!"
+    IF c > 0 THEN
+        PRINT "line function: y="; b; "x+"; c
+    ELSE PRINT "line function: y="; b; "x"; c
+    END IF
+    END
+END IF
+
+IF b > 0 AND c > 0 THEN PRINT "y="; a; "x^2+"; b; "x+"; c
+IF b > 0 AND c < 0 THEN PRINT "y="; a; "x^2+"; b; "x"; c
+IF b < 0 AND c > 0 THEN PRINT "y="; a; "x^2"; b; "x+"; c
+IF b < 0 AND c < 0 THEN PRINT "y="; a; "x^2"; b; "x"; c
+'till this part, it finds the parabolic function. Next is making the file for AutoCAD.
+
+DIM n AS INTEGER
+DIM xbas, xbit AS INTEGER
+
+INPUT "x ekseni uzerinde cizdirmek istediginiz araligi giriniz (xbaslangic, xbitis): ", xbas, xbit
+INPUT "Kac segmente bolmek istiyorsunuz?: ", n 'segment adedi
+
+DIM dx AS SINGLE
+dx = (xbit - xbas) / n
+
+PRINT "x'ler arasindaki aralik (dx): "; dx
+SLEEP 1
+
+DIM x, y AS SINGLE
+
+
+DIM v AS INTEGER
+FOR v = 0 TO n
+    x = xbas + dx * v
+    y = a * (x) ^ 2 + b * x + c
+    PRINT x; ","; y
+NEXT v
+SLEEP 1
+
+
+DIM j AS INTEGER
+INPUT "Tonoz uzunlugu ne kadar olsun?: ", j
+SLEEP 1
+PRINT "scr dosyasini C:\parabol.scr adresinde bulabilirsiniz."
+
+OPEN "C:\parabol.scr" FOR OUTPUT AS #1
+
+
+FOR v = 0 TO n
+
+    PRINT #1, "3dface"
+    x = xbas + dx * v
+    y = a * (x) ^ 2 + b * x + c
+    WRITE #1, 0, x, y 'birinci nokta
+    WRITE #1, j, x, y 'ikinci nokta
+    x = xbas + dx * (v + 1)
+    y = a * (x) ^ 2 + b * x + c
+    WRITE #1, j, x, y 'ucuncu nokta
+    WRITE #1, 0, x, y 'dorduncu nokta
+    PRINT #1, ""
+NEXT v
+
+CLOSE #1
+END
 
 
 

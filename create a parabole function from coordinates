@@ -44,13 +44,13 @@ IF b < 0 AND c < 0 THEN PRINT "y="; a; "x^2"; b; "x"; c
 DIM n AS INTEGER
 DIM xbas, xbit AS INTEGER
 
-INPUT "x ekseni uzerinde cizdirmek istediginiz araligi giriniz (xbaslangic, xbitis): ", xbas, xbit
-INPUT "Kac segmente bolmek istiyorsunuz?: ", n 'segment adedi
+INPUT "enter the length you wish on the x-axis (xstart, xend): ", xs, xe
+INPUT "How many segments do you want: ", n 'number of segments
 
 DIM dx AS SINGLE
-dx = (xbit - xbas) / n
+dx = (xe - xs) / n
 
-PRINT "x'ler arasindaki aralik (dx): "; dx
+PRINT "distance between x points (dx): "; dx
 SLEEP 1
 
 DIM x, y AS SINGLE
@@ -58,7 +58,7 @@ DIM x, y AS SINGLE
 
 DIM v AS INTEGER
 FOR v = 0 TO n
-    x = xbas + dx * v
+    x = xs + dx * v
     y = a * (x) ^ 2 + b * x + c
     PRINT x; ","; y
 NEXT v
@@ -66,9 +66,9 @@ SLEEP 1
 
 
 DIM j AS INTEGER
-INPUT "Tonoz uzunlugu ne kadar olsun?: ", j
+INPUT "How long do you want your vault to be: ", j
 SLEEP 1
-PRINT "scr dosyasini C:\parabol.scr adresinde bulabilirsiniz."
+PRINT "You can find the scr file in C:\parabol.scr"
 
 OPEN "C:\parabol.scr" FOR OUTPUT AS #1
 
